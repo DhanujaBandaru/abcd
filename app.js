@@ -26,10 +26,20 @@ const initializeDBAndServer = async () => {
 };
 initializeDBAndServer();
 //API 1
+const convertDbObjectToResponseObject = (dbObject) => {
+  return {
+    playerId: dbObject.player_id,
+    playerName: dbObject.player_name,
+    jerseyNumber: dbObject.jersey_number,
+    role: dbObject.role,
+  };
+};
 app.get("/players/", async (request, response) => {
   const sql = `SELECT * FROM cricket_team ORDER BY player_id;`;
   const cricketTeam = await db.all(sql);
-  response.send(cricketTeam);
+  response.send(
+    cricketTeam.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 //API 2
 app.post("/players/", async (request, response) => {
